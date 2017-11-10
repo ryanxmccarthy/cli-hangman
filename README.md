@@ -1,1 +1,1 @@
-# cli-hangman
+# hangman-cli
