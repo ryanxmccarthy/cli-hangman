@@ -9,17 +9,32 @@ var wordToGuess;
 
 function newGame() {
 	if (guessesLeft === 10) {
-	 	console.log("Get ready!");
-		console.log('====================');
+		guessedLetters = [];
+	 	console.log("Lord of the Rings Hangman");
+		console.log('========================================');
 		var wordToGuess = new Word(words[Math.floor(Math.random() * words.length)]);
 	  	wordToGuess.getLetters();
-	  	console.log(wordToGuess.wordRender());
+	  	console.log(wordToGuess.showWord());
 	  	prompt(wordToGuess);
 	} else {
 	  	guessesLeft = 10;
 	  	newGame();
 	}
 };
+
+function playAgain() {
+	inquirer.prompt([{
+	  name: "playAgain",
+	  type: "input",
+	  message: "Play again? y/n",
+	}]).then(function(response) {
+		if (response.playAgain === 'y') {
+			newGame()
+		} else {
+			console.log('Bye!')
+		}
+	})
+}
 
 function prompt(wordToGuess) {
 	inquirer.prompt([{
@@ -33,8 +48,8 @@ function prompt(wordToGuess) {
 	      	return false;
 	    }
 	}
-	}]).then(function(lttr) {
-		var userGuess = (lttr.letter).toUpperCase();
+	}]).then(function(letter) {
+		var userGuess = (letter.letter).toUpperCase();
 	  	var guessedAlready = false;
 	    for (var i = 0; i < guessedLetters.length; i++) {
 	      	if (userGuess === guessedLetters[i]) {
@@ -43,31 +58,33 @@ function prompt(wordToGuess) {
 	    }
 	    if (guessedAlready === false) {
 	      guessedLetters.push(userGuess);
-	      var found = wordToGuess.checkIfLetterFound(userGuess);
+	      var found = wordToGuess.letterFound(userGuess);
 	      if (found === 0) {
 	        console.log('Nope! You guessed wrong.');
 	        guessesLeft--;
 	        console.log('Guesses remaining: ' + guessesLeft);
-	        console.log('\n====================');
-	        console.log(wordToGuess.wordRender());
-	        console.log('\n====================');
+	        console.log('\n========================================');
+	        console.log(wordToGuess.showWord());
+	        console.log('\n========================================');
 	        console.log("Letters guessed: " + guessedLetters);
 	      } else {
 	        console.log('That\'s right!');
-	          if (wordToGuess.didWeFindTheWord() === true) {
-	            console.log(wordToGuess.wordRender());
+	          if (wordToGuess.wordGuessed() === true) {
+	            console.log(wordToGuess.showWord());
 	            console.log('Congratulations, you win!');
+	            playAgain();
 	          } else {
 	            console.log('Guesses remaining: ' + guessesLeft);
-	            console.log(wordToGuess.wordRender());
-	            console.log('\n====================');
+	            console.log(wordToGuess.showWord());
+	            console.log('\n========================================');
 	            console.log("Letters guessed: " + guessedLetters);
 	          }
 	      }
 	      if (guessesLeft > 0 && wordToGuess.wordFound === false) {
 	        prompt(wordToGuess);
-	      } else if (guessesLeft === 0){
+	      } else if (guessesLeft === 0) {
 	        console.log('The word was: ' + wordToGuess.word);
+	        playAgain();
 	      }
 	    } else {
 	        console.log("You've guessed that letter already. Try again.")

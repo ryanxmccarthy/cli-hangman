@@ -11,7 +11,7 @@ function Word(word) {
       this.letters.push(newLetter);
     }
   };
-  this.didWeFindTheWord = function() {
+  this.wordGuessed = function() {
     if (this.letters.every(function(letter) {
       return letter.show === true;
     })){
@@ -19,7 +19,7 @@ function Word(word) {
       return true;
     }
   };
-  this.checkIfLetterFound = function(guessedLetter) {
+  this.letterFound = function(guessedLetter) {
     var whatToReturn = 0;
     this.letters.forEach(function(letter) {
       if (letter.letter === guessedLetter) {
@@ -29,7 +29,7 @@ function Word(word) {
     })
     return whatToReturn;
   };
-  this.wordRender = function() {
+  this.showWord = function() {
     var display = '';
     that.letters.forEach(function(letter){
       var currentLetter = letter.showLetter();
